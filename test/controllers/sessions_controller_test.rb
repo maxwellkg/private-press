@@ -90,4 +90,45 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_response :unauthorized
     assert_equal "unauthenticated", JSON.parse(response.body).dig("error", "code")
   end
+
+  test "create JSON with valid credentials returns token payload" do
+    post session_url(format: :json), params: { email_address: "david@example.com", password: "secret123456" }
+
+    assert_response :ok
+    
+    json = JSON.parse(response.body)
+    
+    assert json["token"].present?
+    assert_equal "David", json["name"]
+    assert_equal "david@example.com", json["email_address"]
+    assert_equal users(:david).id, json["user_id"]
+    assert Session.find_by(token: json["token"])
+  end
+
+  test "create JSON with bad credentials returns unauthenticated" do
+    post session_url(format: :json), params: { email_address: "david@example.com", password: "wrong" }
+
+    assert_response :unauthorized
+    assert_equal "unauthenticated", JSON.parse(response.body).dig("error", "code")
+  end
+
+  test "create JSON with missing credentials returns unauthenticated" do
+    post session_url(format: :json), params: { email_address: "david@example.com" }
+
+    assert_response :unauthorized
+    assert_equal "unauthenticated", JSON.parse(response.body).dig("error", "code")
+  end
+
+  test "destroy JSON with valid bearer token returns no content and invalidates session" do
+    sign_in :david
+    session = users(:david).sessions.last
+
+    delete session_url(format: :json), headers: { "Authorization" => "Bearer #{session.token}" }
+
+    assert_response :no_content
+    assert_nil Session.find_by(id: session.id)
+
+    delete session_url(format: :json), headers: { "Authorization" => "Bearer #{session.token}" }
+    assert_response :unauthorized
+  end
 end
