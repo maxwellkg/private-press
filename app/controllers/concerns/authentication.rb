@@ -31,14 +31,18 @@ module Authentication
     end
 
     def restore_authentication
-      if session = find_session_by_cookie
+      if session = find_session
         resume_session session
       end
     end
 
     def request_authentication
-      session[:return_to_after_authenticating] = request.url
-      redirect_to new_session_url
+      if request.format.json?
+        render_json_error(:unauthenticated)
+      else
+        session[:return_to_after_authenticating] = request.url
+        redirect_to new_session_url
+      end
     end
 
     def redirect_signed_in_user_to_root

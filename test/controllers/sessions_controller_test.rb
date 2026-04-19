@@ -55,4 +55,39 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_not cookies[:session_token].present?
     assert_nil Session.find_by(id: session.id)
   end
+
+  test "valid bearer token authenticates protected JSON endpoint" do
+    sign_in :david
+    session = users(:david).sessions.last
+    session.update!(last_active_at: 2.hours.ago)
+    original_last_active_at = session.last_active_at
+
+    post books_url(format: :json), headers: { "Authorization" => "Bearer #{session.token}" },
+      params: { book: { title: "Test Book" } }
+
+    refute_equal 401, response.status
+    session.reload
+    assert session.last_active_at > original_last_active_at
+  end
+
+  test "missing bearer token on protected JSON endpoint returns 401" do
+    delete session_url(format: :json)
+
+    assert_response :unauthorized
+    assert_equal "unauthenticated", JSON.parse(response.body).dig("error", "code")
+  end
+
+  test "invalid bearer token returns 401" do
+    delete session_url(format: :json), headers: { "Authorization" => "Bearer invalid_token" }
+
+    assert_response :unauthorized
+    assert_equal "unauthenticated", JSON.parse(response.body).dig("error", "code")
+  end
+
+  test "malformed Authorization header returns 401" do
+    delete session_url(format: :json), headers: { "Authorization" => "NotBearer token" }
+
+    assert_response :unauthorized
+    assert_equal "unauthenticated", JSON.parse(response.body).dig("error", "code")
+  end
 end
