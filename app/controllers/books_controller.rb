@@ -8,6 +8,11 @@ class BooksController < ApplicationController
 
   def index
     @books = Book.accessable_or_published.ordered
+
+    respond_to do |format|
+      format.html
+      format.json
+    end
   end
 
   def new
@@ -15,10 +20,13 @@ class BooksController < ApplicationController
   end
 
   def create
-    book = Book.create! book_params
-    update_accesses(book)
+    @book = Book.create! book_params
+    update_accesses(@book)
 
-    redirect_to book_slug_url(book)
+    respond_to do |format|
+      format.html { redirect_to book_slug_url(@book) }
+      format.json { render :create, status: :created }
+    end
   end
 
   def show
@@ -27,6 +35,7 @@ class BooksController < ApplicationController
     respond_to do |format|
       format.html
       format.md
+      format.json
     end
   end
 
@@ -38,13 +47,19 @@ class BooksController < ApplicationController
     update_accesses(@book)
     remove_cover if params[:remove_cover] == "true"
 
-    redirect_to book_slug_url(@book)
+    respond_to do |format|
+      format.html { redirect_to book_slug_url(@book) }
+      format.json
+    end
   end
 
   def destroy
     @book.destroy
 
-    redirect_to root_url
+    respond_to do |format|
+      format.html { redirect_to root_url }
+      format.json { head :no_content }
+    end
   end
 
   private
@@ -62,6 +77,8 @@ class BooksController < ApplicationController
 
     def ensure_index_is_not_empty
       if !signed_in? && Book.published.none?
+        return if request.format.json?
+
         require_authentication
       end
     end

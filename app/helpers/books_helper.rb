@@ -1,4 +1,28 @@
 module BooksHelper
+  BOOK_JSON_BASE_ATTRIBUTES = %i[
+    id
+    title
+    subtitle
+    author
+    slug
+    created_at
+    updated_at
+  ].freeze
+
+  BOOK_JSON_EDITABLE_ATTRIBUTES = %i[
+    published
+    everyone_access
+    theme
+  ].freeze
+
+  EDITABLE_BOOK_JSON_ATTRIBUTES = (
+    BOOK_JSON_BASE_ATTRIBUTES + BOOK_JSON_EDITABLE_ATTRIBUTES
+  ).freeze
+
+  def book_json_attributes(book)
+    book.editable? ? EDITABLE_BOOK_JSON_ATTRIBUTES : BOOK_JSON_BASE_ATTRIBUTES
+  end
+
   def book_toc_tag(book, &)
     tag.ol class: "toc", tabindex: 0,
       data: {
