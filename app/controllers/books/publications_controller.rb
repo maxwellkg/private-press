@@ -4,6 +4,10 @@ class Books::PublicationsController < ApplicationController
   before_action :ensure_editable, only: %i[ edit update ]
 
   def show
+    respond_to do |format|
+      format.html
+      format.json
+    end
   end
 
   def edit
@@ -11,7 +15,11 @@ class Books::PublicationsController < ApplicationController
 
   def update
     @book.update! book_params
-    redirect_to book_slug_url(@book)
+
+    respond_to do |format|
+      format.html { redirect_to book_slug_url(@book) }
+      format.json
+    end
   end
 
   private
