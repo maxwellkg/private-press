@@ -6,7 +6,7 @@ module Authentication
     before_action :require_authentication
     helper_method :signed_in?
 
-    protect_from_forgery with: :exception, unless: -> { authenticated_by.bot_key? }
+    protect_from_forgery with: :exception, unless: -> { authenticated_by.bot_key? || request.format.json? }
   end
 
   class_methods do
