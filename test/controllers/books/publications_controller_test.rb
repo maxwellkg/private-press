@@ -45,8 +45,8 @@ class Books::PublicationsTest < ActionDispatch::IntegrationTest
   end
 
   test "publication JSON allows editor to update and returns 200" do
-    assert_changes @book.reload.published, from: false, to: true do
-      assert_changes @book.reload.slug, from: "manual", to: "new-slug" do
+    assert_changes -> { @book.reload.published }, from: false, to: true do
+      assert_changes -> { @book.reload.slug }, from: "manual", to: "new-slug" do
         patch book_publication_path(@book),
               as: :json,
               headers: authorization_headers_for_user(:david),
@@ -63,7 +63,7 @@ class Books::PublicationsTest < ActionDispatch::IntegrationTest
   end
 
   test "publication JSON returns 403 for non-editor" do
-    assert_no_change @book.reload.published do
+    assert_no_changes -> { @book.reload.published } do
       patch book_publication_path(@book), as: :json, headers: authorization_headers_for_user(:jz), params: {
         book: { published: true }
       }
