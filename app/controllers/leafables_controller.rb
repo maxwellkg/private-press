@@ -13,12 +13,18 @@ class LeafablesController < ApplicationController
   def create
     @leaf = @book.press new_leafable, leaf_params
     position_new_leaf @leaf
+
+    respond_to do |format|
+      format.turbo_stream
+      format.json { render :show, status: :created }
+    end
   end
 
   def show
     respond_to do |format|
       format.html
       format.md
+      format.json
     end
   end
 
@@ -31,6 +37,7 @@ class LeafablesController < ApplicationController
     respond_to do |format|
       format.turbo_stream { render }
       format.html { head :no_content }
+      format.json { render :show }
     end
   end
 
@@ -40,6 +47,7 @@ class LeafablesController < ApplicationController
     respond_to do |format|
       format.turbo_stream { render }
       format.html { redirect_to book_slug_url(@book) }
+      format.json { head :no_content }
     end
   end
 
