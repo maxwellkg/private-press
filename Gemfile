@@ -6,14 +6,16 @@ gem "rails", github: "rails/rails"
 
 # Drivers
 gem "sqlite3", "~> 2.5"
-gem "redis", ">= 4.0.1"
 
 # Deployment
 gem "puma", ">= 5.0"
 
 # Jobs
-gem "resque", "~> 2.6.0"
-gem "resque-pool", "~> 0.7.1"
+gem "solid_queue"
+
+# Cache and realtime
+gem "solid_cache"
+gem "solid_cable"
 
 # Front-end
 gem "propshaft"
@@ -29,6 +31,7 @@ gem "bcrypt", "~> 3.1.7"
 gem "image_processing", "~> 1.13"
 gem "rqrcode"
 gem "thruster"
+gem "kamal", require: false
 gem "useragent", github: "basecamp/useragent"
 gem "front_matter_parser"
 

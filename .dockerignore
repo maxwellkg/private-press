@@ -27,9 +27,6 @@
 !/storage/
 !/storage/.keep
 
-# Ignore development credentials
-/config/credentials.yml.enc
-
 # Ignore deployment files
 /config/deploy*.yml
 /bin/deploy

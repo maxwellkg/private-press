@@ -31,8 +31,14 @@
 
 /public/assets
 
+# Keep local Kamal deployment files out of git.
+/config/deploy.yml
+
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
 # Ignore exported zipfiles
 /*.zip
+
+# Ignore key files for decrypting credentials and more.
+/config/*.key

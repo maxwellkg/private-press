@@ -1,0 +1,28 @@
+service: canon
+
+image: canon
+
+servers:
+  web:
+    - your-server-ip
+
+proxy:
+  ssl: true
+  host: canon.example.com
+
+registry:
+  server: localhost:5555
+
+env:
+  secret:
+    - RAILS_MASTER_KEY
+  clear:
+    SOLID_QUEUE_IN_PUMA: true
+
+volumes:
+  - "canon_storage:/rails/storage"
+
+asset_path: /rails/public/assets
+
+builder:
+  arch: amd64

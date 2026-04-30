@@ -38,7 +38,7 @@ FROM base
 
 # Install packages needed for deployment
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libjemalloc2 libsqlite3-0 libvips redis && \
+    apt-get install --no-install-recommends -y curl libjemalloc2 libsqlite3-0 libvips && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Copy built artifacts: gems, application
@@ -60,6 +60,6 @@ ENV GIT_REVISION=$GIT_REVISION
 # Entrypoint prepares the application.
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
-# Start the server by default, this can be overwritten at runtime
+# Start the server via Thruster by default, this can be overwritten at runtime
 EXPOSE 80 443
-CMD ["bin/boot"]
+CMD ["./bin/thrust", "./bin/rails", "server"]

@@ -1,34 +1,23 @@
-# Writebook
+# Canon
 
-### Instantly publish your own books on the web for free, no publisher required.
+Canon is a fork of [Writebook](https://github.com/basecamp/writebook).
 
 Writebook is an easy-to-use application for publishing content on the web.
 Content is authored in Markdown, and books can contain picture pages, chapters, and title pages.
 Books can be published privately or publicly, and are searchable.
 
-## How to get Writebook
+Canon has been updated to use the Rails solid trifecta:
 
-Writebook is distributed as a Docker image.
-The simplest way to install and run it is by using [ONCE](https://github.com/basecamp/once).
+- Solid Queue
+- Solid Cache
+- Solid Cable
 
-To get started, paste this snippet into a terminal on the machine where you want to install Writebook:
+Writebook was originally developed to be distributed as a Docker image. Canon has been updated to deploy using Kamal.
 
-```sh
-curl https://get.once.com/writebook | sh
-```
+To deploy Canon, copy `config/deploy.yml.example` to `config/deploy.yml` and update it with your deployment details.
 
-## Deploying manually with Docker
+In production, Canon uses local storage.
 
-If you'd rather set the Docker image up yourself, you can use `docker run` or `docker compose` to do that.
-The official image is `ghcr.io/basecamp/writebook`.
-
-You'll need to route the incoming web traffic to ports 80 and 443 (or just 80 if you run without SSL).
-To persist the storage of the application, mount a Docker volume to `/rails/storage`.
-
-You can configure the SSL setting with the following environment variables:
-
-- `SSL_DOMAIN` - enable automatic SSL via Let's Encrypt for the given domain name
-- `DISABLE_SSL` - alternatively, set `DISABLE_SSL` to serve over plain HTTP
 
 ## Running in development
 

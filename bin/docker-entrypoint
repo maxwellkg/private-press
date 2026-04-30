@@ -5,4 +5,10 @@ if [ -f /usr/lib/*/libjemalloc.so.2 ]; then
   export LD_PRELOAD="$(echo /usr/lib/*/libjemalloc.so.2) $LD_PRELOAD"
 fi
 
+# If running the Rails server, prepare the database first.
+if [ "${@: -2:1}" = "./bin/rails" ] && [ "${@: -1:1}" = "server" ]; then
+  rm -f tmp/pids/server.pid
+  ./bin/rails db:prepare
+fi
+
 exec "${@}"

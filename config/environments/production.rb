@@ -40,8 +40,8 @@ Rails.application.configure do
   # for everything.
   config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info")
 
-  # Cache in memory for now
-  config.cache_store = :redis_cache_store
+  # Use the database-backed cache store.
+  config.cache_store = :solid_cache_store
 
   # Assets are cacheable
   config.public_file_server.headers = {
@@ -52,9 +52,9 @@ Rails.application.configure do
   # the I18n.default_locale when a translation cannot be found).
   config.i18n.fallbacks = true
 
-  # Always be SSL'ing (unless told not to)
-  config.assume_ssl = ENV["DISABLE_SSL"].blank?
-  config.force_ssl  = ENV["DISABLE_SSL"].blank?
+  # Assume all access to the app happens through an SSL-terminating proxy.
+  config.assume_ssl = true
+  config.force_ssl  = true
 
   # Don't log any deprecations.
   config.active_support.report_deprecations = false
@@ -62,5 +62,6 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  config.active_job.queue_adapter = :resque
+  # Run background jobs through Solid Queue.
+  config.active_job.queue_adapter = :solid_queue
 end

@@ -66,7 +66,7 @@ class Leaf::SearchableTest < ActiveSupport::TestCase
 
   test "indexing sanitizes page title" do
     leaf = leaves(:welcome_page)
-    leaf.update! title: 'findme Tom & Jerry <b>bold</b>'
+    leaf.update! title: "findme Tom & Jerry <b>bold</b>"
     leaf.reindex
 
     leaves = Leaf.search("findme")
@@ -75,7 +75,7 @@ class Leaf::SearchableTest < ActiveSupport::TestCase
 
   test "indexing strips injected mark tags from title" do
     section = Section.new(body: "findme content")
-    books(:handbook).press(section, title: 'findme <mark>fake highlight</mark>')
+    books(:handbook).press(section, title: "findme <mark>fake highlight</mark>")
     section.leaf.reindex
 
     leaves = Leaf.search("findme")
