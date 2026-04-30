@@ -40,7 +40,7 @@ class Books::PublicationsTest < ActionDispatch::IntegrationTest
     json = JSON.parse(response.body)
 
     assert_equal @book.id, json["book_id"]
-    refute json["published"]
+    assert_not json["published"]
     assert_equal "manual", json["slug"]
   end
 
@@ -57,7 +57,7 @@ class Books::PublicationsTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     json = JSON.parse(response.body)
-    
+
     assert json["published"]
     assert_equal "new-slug", json["slug"]
   end

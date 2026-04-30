@@ -65,7 +65,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     post books_url(format: :json), headers: { "Authorization" => "Bearer #{session.token}" },
       params: { book: { title: "Test Book" } }
 
-    refute_equal 401, response.status
+    assert_not_equal 401, response.status
     session.reload
     assert session.last_active_at > original_last_active_at
   end
@@ -95,9 +95,9 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     post session_url(format: :json), params: { email_address: "david@example.com", password: "secret123456" }
 
     assert_response :ok
-    
+
     json = JSON.parse(response.body)
-    
+
     assert json["token"].present?
     assert_equal "David", json["name"]
     assert_equal "david@example.com", json["email_address"]

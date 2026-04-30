@@ -82,6 +82,14 @@ module BooksHelper
     end
   end
 
+  def toc_leafable_partial_path(leaf)
+    "#{leaf.leafable_type.underscore.pluralize}/toc"
+  end
+
+  def toc_leafable_partial_locals(leaf)
+    { leaf.leafable_type.underscore.to_sym => leaf.leafable }
+  end
+
   private
     def hotkey_data_attributes(key, enabled: true)
       if enabled

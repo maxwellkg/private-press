@@ -24,6 +24,18 @@ module LeavesHelper
       autosave_clean_class: "clean",
       autosave_dirty_class: "dirty",
       autosave_saving_class: "saving"
-    }, **, &
+     }, **, &
+  end
+
+  def leafable_json_key(leaf)
+    leaf.leafable_name
+  end
+
+  def leafable_json_partial(leaf)
+    "#{leaf.leafable_name.pluralize}/#{leaf.leafable_name}"
+  end
+
+  def leafable_json_locals(leaf)
+    { leaf.leafable_name.to_sym => leaf.leafable }
   end
 end

@@ -116,10 +116,10 @@ class LeafablesControllerTest < ActionDispatch::IntegrationTest
     assert_response :ok
     json = JSON.parse(response.body)
 
-    assert_json_leafable json, leaf
-    assert_equal leaf.leafable_id, json["id"]
-    assert_includes json, "body"
-    assert_equal leaf.page.markable, json["body"]
+    assert_json_leaf json, leaf
+    assert_includes json, "page"
+    assert_equal leaf.page.id, json.dig("page", "id")
+    assert_equal leaf.page.markable, json.dig("page", "body")
   end
 
   test "json page create returns 201 and creates resource" do
@@ -130,13 +130,13 @@ class LeafablesControllerTest < ActionDispatch::IntegrationTest
 
       assert_response :created
       json = JSON.parse(response.body)
-      page = Page.find(json.fetch("id"))
+      page = Page.find(json.dig("page", "id"))
 
-      assert_equal page.id, json["id"]
-      assert_equal "Page", json.dig("leaf", "leafable_type")
-      assert_equal "New JSON Page", json.dig("leaf", "title")
-      assert_equal "Page content", json["body"]
-      assert_equal @book.id, json.dig("leaf", "book_id")
+      assert_equal page.leaf.id, json["id"]
+      assert_equal "Page", json["leafable_type"]
+      assert_equal "New JSON Page", json["title"]
+      assert_equal "Page content", json.dig("page", "body")
+      assert_equal @book.id, json["book_id"]
     end
   end
 
@@ -152,9 +152,9 @@ class LeafablesControllerTest < ActionDispatch::IntegrationTest
     assert_response :ok
     json = JSON.parse(response.body)
 
-    assert_equal leaf.page.id, json["id"]
-    assert_equal "Updated Title", json.dig("leaf", "title")
-    assert_equal "Updated body", json["body"]
+    assert_equal leaf.id, json["id"]
+    assert_equal "Updated Title", json["title"]
+    assert_equal "Updated body", json.dig("page", "body")
   end
 
   test "json page destroy returns 204" do
@@ -174,10 +174,11 @@ class LeafablesControllerTest < ActionDispatch::IntegrationTest
     assert_response :ok
     json = JSON.parse(response.body)
 
-    assert_json_leafable json, leaf
-    assert_equal leaf.leafable_id, json["id"]
-    assert_includes json, "body"
-    assert_includes json, "theme"
+    assert_json_leaf json, leaf
+    assert_includes json, "section"
+    assert_equal leaf.section.id, json.dig("section", "id")
+    assert_nil json.dig("section", "body")
+    assert_nil json.dig("section", "theme")
   end
 
   test "json section create returns 201" do
@@ -188,12 +189,12 @@ class LeafablesControllerTest < ActionDispatch::IntegrationTest
 
       assert_response :created
       json = JSON.parse(response.body)
-      section = Section.find(json.fetch("id"))
+      section = Section.find(json.dig("section", "id"))
 
-      assert_equal section.id, json["id"]
-      assert_equal "Section", json.dig("leaf", "leafable_type")
-      assert_equal "Section body", json["body"]
-      assert_equal "dark", json["theme"]
+      assert_equal section.leaf.id, json["id"]
+      assert_equal "Section", json["leafable_type"]
+      assert_equal "Section body", json.dig("section", "body")
+      assert_equal "dark", json.dig("section", "theme")
     end
   end
 
@@ -209,10 +210,10 @@ class LeafablesControllerTest < ActionDispatch::IntegrationTest
     assert_response :ok
     json = JSON.parse(response.body)
 
-    assert_equal leaf.section.id, json["id"]
-    assert_equal "Updated Section Title", json.dig("leaf", "title")
-    assert_equal "Updated section body", json["body"]
-    assert_equal "dark", json["theme"]
+    assert_equal leaf.id, json["id"]
+    assert_equal "Updated Section Title", json["title"]
+    assert_equal "Updated section body", json.dig("section", "body")
+    assert_equal "dark", json.dig("section", "theme")
   end
 
   test "json section destroy returns 204" do
@@ -232,10 +233,11 @@ class LeafablesControllerTest < ActionDispatch::IntegrationTest
     assert_response :ok
     json = JSON.parse(response.body)
 
-    assert_json_leafable json, leaf
-    assert_equal leaf.leafable_id, json["id"]
-    assert_includes json, "caption"
-    assert_includes json, "image_attached"
+    assert_json_leaf json, leaf
+    assert_includes json, "picture"
+    assert_equal leaf.picture.id, json.dig("picture", "id")
+    assert_nil json.dig("picture", "caption")
+    assert_equal leaf.picture.image.attached?, json.dig("picture", "image_attached")
   end
 
   test "json picture create returns 201" do
@@ -246,12 +248,42 @@ class LeafablesControllerTest < ActionDispatch::IntegrationTest
 
       assert_response :created
       json = JSON.parse(response.body)
-      picture = Picture.find(json.fetch("id"))
+      picture = Picture.find(json.dig("picture", "id"))
 
-      assert_equal picture.id, json["id"]
-      assert_equal "Picture", json.dig("leaf", "leafable_type")
-      assert_equal "A caption", json["caption"]
-      assert_equal false, json["image_attached"]
+      assert_equal picture.leaf.id, json["id"]
+      assert_equal "Picture", json["leafable_type"]
+      assert_equal "A caption", json.dig("picture", "caption")
+      assert_equal false, json.dig("picture", "image_attached")
+    end
+  end
+
+  test "json picture create accepts multipart image upload" do
+    assert_changes -> { Picture.count }, +1 do
+      post book_pictures_path(@book, format: :json),
+        params: {
+          leaf: { title: "Multipart Picture" },
+          picture: {
+            caption: "Uploaded via multipart",
+            image: fixture_file_upload("white-rabbit.webp", "image/webp")
+          }
+        },
+        headers: authorization_headers_for_user(:kevin)
+
+      assert_response :created
+
+      json = JSON.parse(response.body)
+      picture = Picture.find(json.dig("picture", "id"))
+
+      assert_equal picture.leaf.id, json["id"]
+      assert_equal "Multipart Picture", json["title"]
+      assert_equal "Uploaded via multipart", json.dig("picture", "caption")
+      assert_equal true, json.dig("picture", "image_attached")
+      assert_equal "white-rabbit.webp", json.dig("picture", "image_filename")
+      assert_equal "image/webp", json.dig("picture", "image_content_type")
+      assert json.dig("picture", "image_url").start_with?("/rails/active_storage/blobs/redirect/")
+
+      assert picture.image.attached?
+      assert_equal "white-rabbit.webp", picture.image.filename.to_s
     end
   end
 
@@ -267,9 +299,32 @@ class LeafablesControllerTest < ActionDispatch::IntegrationTest
     assert_response :ok
     json = JSON.parse(response.body)
 
-    assert_equal leaf.picture.id, json["id"]
-    assert_equal "Updated Picture Title", json.dig("leaf", "title")
-    assert_equal "Updated caption", json["caption"]
+    assert_equal leaf.id, json["id"]
+    assert_equal "Updated Picture Title", json["title"]
+    assert_equal "Updated caption", json.dig("picture", "caption")
+  end
+
+  test "json picture update accepts multipart image upload" do
+    leaf = leaves(:reading_picture)
+
+    patch leafable_path(leaf, format: :json),
+      params: {
+        picture: {
+          image: fixture_file_upload("white-rabbit.webp", "image/webp")
+        }
+      },
+      headers: authorization_headers_for_user(:kevin)
+
+    assert_response :ok
+
+    json = JSON.parse(response.body)
+    leaf.reload
+
+    assert json.dig("picture", "image_attached")
+    assert_equal "white-rabbit.webp", json.dig("picture", "image_filename")
+    assert_equal "image/webp", json.dig("picture", "image_content_type")
+    assert json.dig("picture", "image_url").start_with?("/rails/active_storage/blobs/redirect/")
+    assert_equal "white-rabbit.webp", leaf.picture.image.filename.to_s
   end
 
   test "json picture destroy returns 204" do
@@ -309,17 +364,13 @@ class LeafablesControllerTest < ActionDispatch::IntegrationTest
   end
 
   private
-    def assert_json_leafable(json, leaf)
-      assert_includes json, "id"
-
-      assert_includes json, "leaf"
-      leaf_json = json["leaf"]
-      assert_equal leaf.id, leaf_json["id"]
-      assert_equal leaf.leafable_id, leaf_json["leafable_id"]
-      assert_equal leaf.leafable_type, leaf_json["leafable_type"]
-      assert_equal leaf.title, leaf_json["title"]
-      assert_equal leaf.status, leaf_json["status"]
-      assert_equal leaf.position_score, leaf_json["position_score"]
-      assert_equal leaf.book_id, leaf_json["book_id"]
+    def assert_json_leaf(json, leaf)
+      assert_equal leaf.id, json["id"]
+      assert_equal leaf.leafable_id, json["leafable_id"]
+      assert_equal leaf.leafable_type, json["leafable_type"]
+      assert_equal leaf.title, json["title"]
+      assert_equal leaf.status, json["status"]
+      assert_equal leaf.position_score, json["position_score"]
+      assert_equal leaf.book_id, json["book_id"]
     end
 end

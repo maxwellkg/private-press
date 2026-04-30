@@ -16,5 +16,5 @@ module JSONErrors
 
     def status_for_code(code)
       STATUS_MAPPINGS.fetch(code)
-    end  
+    end
 end

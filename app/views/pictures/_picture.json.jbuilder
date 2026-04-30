@@ -1,3 +1,4 @@
+json.id picture.id
 json.caption picture.caption
 json.image_attached picture.image.attached?
 json.image_url picture.image.attached? ? rails_blob_path(picture.image, only_path: true) : nil

@@ -62,7 +62,7 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
     books = JSON.parse(response.body)
     assert_equal 2, books.size
 
-    assert_equal [ "handbook", "manual" ], books.map{ |book| book["slug"] }
+    assert_equal [ "handbook", "manual" ], books.map { |book| book["slug"] }
   end
 
   test "index JSON returns accessible or published books when signed in" do
@@ -97,8 +97,8 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
     handbook = books.find { |book| book["slug"] == "handbook" }
     manual = books.find { |book| book["slug"] == "manual" }
 
-    refute_nil handbook
-    refute_nil manual
+    assert_not_nil handbook
+    assert_not_nil manual
 
     editable_keys = %w[ published everyone_access theme ]
     editable_keys.each do |key|
@@ -117,8 +117,8 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
     handbook = books.find { |b| b["slug"] == "handbook" }
     manual = books.find { |b| b["slug"] == "manual" }
 
-    refute_nil handbook
-    refute_nil manual
+    assert_not_nil handbook
+    assert_not_nil manual
 
     editable_keys = %w[ published everyone_access theme ]
     editable_keys.each do |key|
@@ -182,14 +182,18 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
     expected_leaf = leaves(:welcome_section)
 
     assert_equal expected_leaf.id, first["id"]
+    assert_equal expected_leaf.leafable_id, first["leafable_id"]
     assert_equal expected_leaf.leafable_type, first["leafable_type"]
+    assert_equal expected_leaf.title, first["title"]
+    assert_equal expected_leaf.status, first["status"]
+    assert_equal expected_leaf.position_score, first["position_score"]
+    assert_equal expected_leaf.book_id, first["book_id"]
 
     leafable = first["leafable"]
-    refute_nil leafable
+    assert_not_nil leafable
     assert_equal expected_leaf.leafable_id, leafable["id"]
-    assert_equal expected_leaf.title, leafable["title"]
-    assert_equal expected_leaf.status, leafable["status"]
-    assert_equal expected_leaf.position_score, leafable["position_score"]
+    assert_equal expected_leaf.section.theme, leafable["theme"]
+    assert_equal %w[ id theme ], leafable.keys.sort
   end
 
   test "show JSON TOC is in positioned order" do
@@ -198,7 +202,7 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     toc = JSON.parse(response.body).fetch("toc")
-    position_scores = toc.map { |entry| entry.fetch("leafable").fetch("position_score") }
+    position_scores = toc.map { |entry| entry.fetch("position_score") }
 
     assert_equal position_scores.sort, position_scores
   end
@@ -232,7 +236,7 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
     assert_equal "New Book", json["title"]
   end
 
-  
+
 
   test "create JSON preserves access assignment for editor_ids and reader_ids" do
     assert_difference -> { Book.count }, +1 do
@@ -286,7 +290,7 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Updated Handbook", json["title"]
   end
 
-  
+
 
   test "update JSON returns 403 for non-editable user" do
     patch book_path(books(:handbook)), as: :json, headers: authorization_headers_for_user(:jz), params: {
@@ -333,7 +337,7 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
     assert book.editable?(user: users(:kevin))
     # JZ should still be a reader (access preserved)
     assert book.accessable?(user: users(:jz))
-    refute book.editable?(user: users(:jz))
+    assert_not book.editable?(user: users(:jz))
   end
 
   test "destroy JSON returns 204" do
