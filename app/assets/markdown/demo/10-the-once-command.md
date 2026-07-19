@@ -26,11 +26,11 @@ To run the `once` command in a terminal connect to your server using with either
 ## Additional Commands:
 
 `help` - Help about any command
-`setup` - Re-run the initial setup of Writebook
-`start` - Start Writebook
+`setup` - Re-run the initial setup of PrivatePress
+`start` - Start PrivatePress
 `status` - Show the current status
-`stop` - Stop Writebook
-`update` - Update Writebook to the latest version
+`stop` - Stop PrivatePress
+`update` - Update PrivatePress to the latest version
 
 ## Flags:
 

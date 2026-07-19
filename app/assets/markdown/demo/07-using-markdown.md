@@ -3,15 +3,15 @@ title: Using Markdown
 ---
 # Using Markdown
 
-Text Pages in Writebook use <a href="https://daringfireball.net/projects/markdown/" target="_blank">Markdown</a>, a simple formatting tool for writing on the web.
+Text Pages in PrivatePress use <a href="https://daringfireball.net/projects/markdown/" target="_blank">Markdown</a>, a simple formatting tool for writing on the web.
 
 If you're already a Markdown expert, you can write your book with the same formatting you're accustomed to. Below you'll find a handy reference.
 
-But if you're new to Markdown, Writebook's text editing toolbar has the most common formatting tools for anyone who's familiar with a word processor.
+But if you're new to Markdown, PrivatePress's text editing toolbar has the most common formatting tools for anyone who's familiar with a word processor.
 
  ![markdown-toolbar.png](/u/markdown-toolbar-lnzfdA.png)
 
-When you hit a formatting button, Writebook will wrap selected text in the corresponding Markdown formatting characters.
+When you hit a formatting button, PrivatePress will wrap selected text in the corresponding Markdown formatting characters.
 
 ## Basic formatting
 
@@ -57,11 +57,11 @@ Use an email style `>` to create a block quotation.
 ## Code blocks
 Use three backticks to create a multi-line code block. Syntax highlighting is available when you specify the code language of the block.
 <pre><code>``` ruby
-puts 'Hello, Writebook!'  # Print out "Hello, Writebook!"
+puts 'Hello, PrivatePress!'  # Print out "Hello, PrivatePress!"
 ```</code></pre>
 
 ``` ruby
-puts 'Hello, Writebook!'  # Print out "Hello, Writebook!"
+puts 'Hello, PrivatePress!'  # Print out "Hello, PrivatePress!"
 ```
 
 ## Horizontal rules
@@ -74,7 +74,7 @@ Use three asterisks (or dashes) in a row to make a horizontal rule.
 
 ## Advanced formatting
 
-Writebook also supports `HTML` formatting in your pages. Tags like `<p>`, `<img>`, `<a>`,  `<h1>`, `<h2>`, `<strong>`, `<em>`, `<center>`, `<details>`, `<table>`, `<video>`, and more are supported. You can also use `CSS` inside the inline `style` attribute like this tip for centering text uses.
+PrivatePress also supports `HTML` formatting in your pages. Tags like `<p>`, `<img>`, `<a>`,  `<h1>`, `<h2>`, `<strong>`, `<em>`, `<center>`, `<details>`, `<table>`, `<video>`, and more are supported. You can also use `CSS` inside the inline `style` attribute like this tip for centering text uses.
 
 ### Center text
 ```

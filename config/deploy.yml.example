@@ -1,6 +1,6 @@
-service: canon
+service: privatepress
 
-image: canon
+image: privatepress
 
 servers:
   web:
@@ -8,7 +8,7 @@ servers:
 
 proxy:
   ssl: true
-  host: canon.example.com
+  host: privatepress.example.com
 
 registry:
   server: localhost:5555
@@ -20,7 +20,7 @@ env:
     SOLID_QUEUE_IN_PUMA: true
 
 volumes:
-  - "canon_storage:/rails/storage"
+  - "privatepress_storage:/rails/storage"
 
 asset_path: /rails/public/assets
 

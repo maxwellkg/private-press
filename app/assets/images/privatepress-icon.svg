@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-labelledby="title desc">
+  <title id="title">PrivatePress open book logo</title>
+  <desc id="desc">A simple hand-drawn outline of an open book.</desc>
+  <g fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M150 165
+             C150 145 150 145 170 145
+             C245 138 323 155 370 210
+             C388 231 398 252 400 275
+             C402 252 412 231 430 210
+             C477 155 555 138 630 145
+             C650 145 650 145 650 165
+             L650 330
+             C650 338 645 342 638 340
+             C565 324 492 327 434 357
+             C419 365 408 377 400 390
+             C392 377 381 365 366 357
+             C308 327 235 324 162 340
+             C155 342 150 338 150 330
+             Z"/>
+    <path d="M150 190
+             L125 195
+             C115 197 110 202 110 215
+             L110 375
+             C110 385 118 390 128 386
+             C224 350 316 348 381 381
+             C392 387 398 395 400 407
+             C402 395 408 387 419 381
+             C484 348 576 350 672 386
+             C682 390 690 385 690 375
+             L690 215
+             C690 202 685 197 675 195
+             L650 190"/>
+    <path d="M400 275 L400 365"/>
+    <path d="M400 407
+             C386 421 385 440 399 447
+             C413 454 429 447 431 435
+             C433 423 421 414 400 407"/>
+  </g>
+</svg>

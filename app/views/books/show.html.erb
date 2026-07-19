@@ -126,9 +126,9 @@
 
 <% content_for :footer do %>
   <nav class="book__nav flex align-center justify-center">
-    <a href="https://once.com/writebook" class="product__wordmark btn btn--plain txt-medium" target="_blank">
-      <%= image_tag "writebook-icon.svg", aria: { hidden: true }, size: 24 %>
-      <span>Made with Writebook</span>
-    </a>
+    <%= link_to root_path, class: "product__wordmark btn btn--plain txt-medium" do %>
+      <%= image_tag "privatepress-icon.svg", aria: { hidden: true }, size: 24 %>
+      <span>PrivatePress</span>
+    <% end %>
   </nav>
 <% end %>
