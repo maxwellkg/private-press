@@ -37,7 +37,7 @@ Rails.application.routes.draw do
   end
 
   # index for books only available for API requests as UI requests handle via root path
-  resources :books, only: :index, default: { formats: :json }, constraints: ->(req) { req.format.json? }
+  resources :books, only: %i[ index show ], default: { formats: :json }, constraints: ->(req) { req.format.json? }
 
   get "/:id/:slug", to: "books#show", constraints: { id: /\d+/ }, as: :slugged_book
   get "/:book_id/:book_slug/:id/:slug", to: "leafables#show", constraints: { book_id: /\d+/, id: /\d+/ }, as: :slugged_leafable
