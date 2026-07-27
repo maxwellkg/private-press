@@ -12,7 +12,11 @@ module SetBookLeaf
     end
 
     def set_leaf
-      @leaf = @book.leaves.active.find(params[:id])
+      @leaf = @book.
+                leaves
+                .active
+                .where(leafable_type: model_class.to_s)
+                .find(params[:id])
     end
 
     def set_leafable
