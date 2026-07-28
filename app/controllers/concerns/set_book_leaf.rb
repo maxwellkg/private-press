@@ -15,8 +15,16 @@ module SetBookLeaf
       @leaf = @book.
                 leaves
                 .active
-                .where(leafable_type: model_class.to_s)
+                .where(filter_for_leafable_type)
                 .find(params[:id])
+    end
+
+    def filter_for_leafable_type
+      leafables_controller? ? {} : { leafable_type: model_class.to_s }
+    end
+
+    def leafables_controller?
+      controller_leafable_name == "Leafable"
     end
 
     def set_leafable

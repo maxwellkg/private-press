@@ -31,9 +31,14 @@ Rails.application.routes.draw do
       resource :search
     end
 
-    resources :sections
-    resources :pictures
-    resources :pages
+    resources :sections, except: %i[ index show ]
+    resources :sections, only: :show, constraints: ->(req) { req.format.json? }
+
+    resources :pictures, except: %i[ index show ]
+    resources :pictures, only: :show, constraints: ->(req) { req.format.json? }
+
+    resources :pages, except: %i[ index show ]
+    resources :pages, only: :show, constraints: ->(req) { req.format.json? }
   end
 
   # index for books only available for API requests as UI requests handle via root path
