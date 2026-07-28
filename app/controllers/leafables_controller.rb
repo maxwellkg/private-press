@@ -53,11 +53,7 @@ class LeafablesController < ApplicationController
 
   private
     def leaf_params
-      default_leaf_params.merge params.fetch(:leaf, {}).permit(:title)
-    end
-
-    def default_leaf_params
-      { title: new_leafable.model_name.human }
+      params.fetch(:leaf, {}).permit(:title)
     end
 
     def new_leafable
