@@ -192,7 +192,7 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
     leafable = first["leafable"]
     assert_not_nil leafable
     assert_equal expected_leaf.leafable_id, leafable["id"]
-    assert_equal expected_leaf.section.theme, leafable["theme"]
+    assert_nil leafable["theme"]
     assert_equal %w[ id theme ], leafable.keys.sort
   end
 
